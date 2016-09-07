@@ -1,0 +1,9 @@
+#!/bin/bash
+# build-project --- Build the project from sources.
+
+set -e
+
+cd $PROJ_DIR
+
+tsc
+browserify lib/checkin.js -o app/scripts/checkin.js
