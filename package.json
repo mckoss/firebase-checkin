@@ -13,7 +13,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/chai": "^3.4.32",
-    "@types/es6-promise": "0.0.31",
+    "@types/es6-promise": "0.0.32",
     "@types/mocha": "^2.2.31",
     "@types/node": "^6.0.38",
     "browserify": "^13.1.0",
