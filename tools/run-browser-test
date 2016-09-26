@@ -1,0 +1,8 @@
+#!/bin/bash
+# run-browser-test --- Open a browser on the test page.
+set -e
+
+cd "$PROJ_DIR"
+
+nohup firebase serve -p 8080 2>&1 > "$PROJ_DIR/firebase-serve.log" &
+python -m webbrowser -t http://localhost:8080/test.html

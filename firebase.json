@@ -3,12 +3,6 @@
     "rules": "checkin.bolt"
   },
   "hosting": {
-    "public": "app",
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
+    "public": "app"
   }
 }
