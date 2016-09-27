@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test Loader</title>
+    <link rel="stylesheet" href="/styles/mocha.css">
+    <script src="/scripts/mocha.js"></script>
+    <script src="/scripts/chai.js"></script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+
+    <script>
+      mocha.setup('tdd')
+      // ?test-name
+      var name = window.location.search.slice(1);
+      window.addEventListener('load', function() {
+        var script = document.createElement('script');
+        script.src = '/scripts/' + name + '-test.js';
+        document.body.appendChild(script);
+        script.addEventListener('load', function() {
+          mocha.run();
+        });
+      });
+
+    </script>
+  </body>
+</html>

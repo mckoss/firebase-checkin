@@ -1,10 +1,47 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Firebase-Checkin</title>
-    <script src="scripts/checkin.js"></script>
+    <title>Tests</title>
+    <style>
+      iframe {
+      display: block;
+      width: 100%;
+      height: 250px;
+      border: none;
+      }
+    </style>
   </head>
   <body>
-    <h1>Firebase Checkin</h1>
+    <div id="test-links">
+      <h2>Testing links</h2>
+    </div>
+    <div id="iframes">
+      <h2>IFrame tests</h2>
+      <i> Tests are placed in iframes since they include their own bundled
+        copy of the Firebase SDK.</i>
+    </div>
+    <script>
+      var iframes = document.getElementById('iframes');
+      var links = document.getElementById('test-links');
+      var tests = [
+        "checkin"
+      ];
+      // Build links to individual tests
+      for (var i = 0; i < tests.length; i++) {
+        var link = document.createElement('a');
+        link.appendChild(document.createTextNode(tests[i]));
+        link.href = 'loader.html?' + tests[i];
+        links.appendChild(document.createElement('br'));
+        links.appendChild(link);
+       }
+
+      // Build IFrames containing tests
+      for (var i = 0; i < tests.length; i++) {
+        var iframe = document.createElement('iframe');
+        iframe.src = 'loader.html?' + tests[i];
+        iframes.appendChild(iframe);
+       }
+    </script>
+
   </body>
 </html>
