@@ -4,7 +4,7 @@ lib/
 npm-debug.log
 auth-secrets.js
 .firebaserc
-app/scripts/checkin.js
+app/scripts/index.js
 app/scripts/*-test.js
 firebase-serve.log
 firebase-debug.log
