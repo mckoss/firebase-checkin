@@ -9,11 +9,15 @@ rm -rf lib
 echo -e "\nCompiling TypeScript files ..."
 tsc
 
-browserify lib/checkin.js -o app/scripts/checkin.js
+echo -e "\nBrowserify packaging ..."
 
-echo -e "\nPacking files for browser tests ..."
+TARGET="app/scripts/index.js"
+browserify lib/checkin.js -o "$TARGET"
+ls -l $TARGET
+
 for file in lib/test/*-test.js; do
   base="$(basename "$file")"
-  echo -e "\nBrowserify $file ..."
-  browserify "$file" -o "app/scripts/$base"
+  TARGET="app/scripts/$base"
+  browserify "$file" -o "$TARGET"
+  ls -l $TARGET
 done
