@@ -4,5 +4,5 @@ set -e
 
 cd "$PROJ_DIR"
 
-nohup firebase serve -p 8080 2>&1 > "$PROJ_DIR/firebase-serve.log" &
-python -m webbrowser -t http://localhost:8080/test.html
+nohup firebase serve -p 8888 2>&1 > "$PROJ_DIR/firebase-serve.log" &
+python -m webbrowser -t http://localhost:8888/test.html

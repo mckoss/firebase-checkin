@@ -1,12 +1,12 @@
 {
+  "module": "commonjs",
+  "target": "es5",
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
     "outDir": "lib",
     "rootDir": "src",
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "noEmitOnError": true
   },
   "exclude": [
