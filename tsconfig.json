@@ -3,6 +3,7 @@
   "target": "es5",
   "compilerOptions": {
     "outDir": "lib",
+    "lib": ["es2015", "dom"],
     "rootDir": "src",
     "noImplicitAny": true,
     "strictNullChecks": true,

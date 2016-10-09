@@ -14,12 +14,12 @@ tsc
 echo -e "\nBrowserify packaging ..."
 
 TARGET="app/scripts/index.js"
-browserify lib/checkin.js -o "$TARGET"
+browserify --debug lib/app.js -o "$TARGET"
 ls -l $TARGET
 
 for file in lib/test/*-test.js; do
   base="$(basename "$file")"
   TARGET="app/scripts/$base"
-  browserify "$file" -o "$TARGET"
+  browserify --debug "$file" -o "$TARGET"
   ls -l $TARGET
 done
