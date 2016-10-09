@@ -9,3 +9,4 @@ app/scripts/*-test.js
 firebase-serve.log
 firebase-debug.log
 configs/
+src/config.ts
