@@ -8,3 +8,4 @@ app/scripts/index.js
 app/scripts/*-test.js
 firebase-serve.log
 firebase-debug.log
+configs/

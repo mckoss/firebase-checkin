@@ -1,0 +1,6 @@
+#!/bin/bash
+# yes-or-no --- Ask user a yes or no question (utility).
+
+PROMPT="$*"
+read -p "$PROMPT (y/N): "
+[[ "$REPLY" == "y" || "$REPLY" == "Y" ]]

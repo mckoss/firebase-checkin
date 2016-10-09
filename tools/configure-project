@@ -4,15 +4,25 @@ set -e
 
 cd $PROJ_DIR
 
-echo "Installing dependencies ..."
+CONFIG_FILE="$PROJ_DIR/.firebaserc"
+
+echo "Updating (installing) dependencies via npm ..."
 npm update
 
-echo -e "\nSelect a Firebase application name where tests will be executed."
-echo "WARNING: ALL DATA IN THIS DATABASE WILL BE REMOVED BY RUNNING TESTS."
-echo "         Please create an application specifically for testing."
-echo "         DO NOT use the name of your production database!!!"
-
-ensure-secret.py auth-secrets.js
-
-# Show outdated modules
+# Display package version state
 npm outdated
+
+if [[ "$1" == "--force" ]]; then
+  shift
+  echo "Forcing re-configuration..."
+  rm "$CONFIG_FILE"
+fi
+
+if [ ! -f "$CONFIG_FILE" ]; then
+  echo "Project configuration missing ... add a 'testing' firebase configuration."
+  firebase use --add
+  cat "$CONFIG_FILE"
+  exit 0
+fi
+
+set-config testing

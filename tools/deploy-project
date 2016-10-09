@@ -1,0 +1,17 @@
+#!/bin/bash
+# deploy-project --- Build and deploy project to hosting.
+
+if [[ "$1" == "" ]]; then
+  ENVIRONMENT="testing"
+else
+  ENVIRONMENT="$1"
+fi
+
+if ! yes-or-no "Deploy to the $ENVIRONMENT environment"; then
+  echo "Aborting deployment..."
+  exit 1
+fi
+
+set-config "$ENVIRONMENT"
+build-project
+firebase deploy -P "$ENVIRONMENT"

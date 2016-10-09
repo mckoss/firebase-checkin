@@ -1,0 +1,22 @@
+#!/bin/bash
+# set-config --- Set configuration of site (testing, staging, or production).
+set -e
+
+cd $PROJ_DIR
+
+if [[ "$1" == "" ]]; then
+  ENVIRONMENT="testing"
+else
+  ENVIRONMENT="$1"
+fi
+
+CONFIG_FILE="$PROJ_DIR/configs/${ENVIRONMENT}.ts"
+
+if [[ ! -f "$CONFIG_FILE" ]]; then
+ echo "Missing configuration file $CONFIG_FILE"
+ extract-config "$CONFIG_FILE"
+fi
+
+cp "$CONFIG_FILE" src/config.ts
+echo "Current configuration:"
+cat src/config.ts

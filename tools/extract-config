@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+# extract-config --- Copy config settings from Firebase website to js file.
+from __future__ import print_function
+
+import sys
+import os
+import re
+import json
+
+def main():
+  if len(sys.argv) != 2:
+    print("Usage: extract-config <file.js>")
+    exit(1)
+
+  file_name = sys.argv[1]
+
+  param_regexp = re.compile(r"\s*([a-zA-Z]+)\s*:\s*\"([^\"]*)\"")
+  config = {}
+
+  print("Paste the code snippet for your app from console.firebase.google.com:")
+  print("=" * 70)
+
+  line = sys.stdin.readline()
+
+  while line:
+    line = line[:-1]
+    if line.startswith("</script>"):
+      # Read the un-terminated spaces at the end of the clipboard
+      print("=" * 70)
+      print("Hit enter to write configuration to %s." % file_name)
+      sys.stdin.readline()
+      break
+
+    m = param_regexp.match(line)
+    if m:
+      print("%s: %s" % (m.group(1), m.group(2)))
+      config[m.group(1)] = m.group(2)
+    line = sys.stdin.readline()
+
+  json_text = json.dumps(config, sort_keys=True, indent=2, separators=(',', ': '))
+  with open(file_name, 'w') as f:
+    f.write('module.exports = ' + json.dumps(config, sort_keys=True, indent=2, separators=(',', ': ')) + ';\n')
+
+if __name__ == '__main__':
+  try:
+    os.system("stty -echo")
+    main()
+  finally:
+    os.system("stty echo")
