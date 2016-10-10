@@ -1,4 +1,5 @@
 import { assert } from 'chai';
+import { negatePromise } from './helpers';
 
 import * as firebase from 'firebase';
 import { Checkin } from '../checkin';
@@ -19,13 +20,8 @@ suite("Checkin not Signed In", () => {
   });
 
   test("Create Event", () => {
-    return checkin.createEvent('test-event', "This is my test event")
-      .then(() => {
-        throw new Error("Should not be able to create events w/o sign in");
-      })
-      .catch((error) => {
-        return true;
-      });
+    negatePromise(checkin.createEvent('test-event', "This is my test event"),
+      "Should not be able to create events w/o sign in");
   });
 });
 
@@ -52,5 +48,17 @@ suite("Checkin Signed In.", () => {
   test("Create Event", () => {
     checkin.setCurrentUser(user);
     return checkin.createEvent('test-event', "This is my test event");
+  });
+
+  test("Over-write event by non-owner", () => {
+    checkin.setCurrentUser(user);
+    let p = checkin.createEvent('test-event', "This is my test event")
+      .then(() => app.auth().signOut())
+      .then(() => app.auth().signInAnonymously())
+      .then((user) => {
+        checkin.setCurrentUser(user);
+        return checkin.createEvent('test-event', "Over-write event");
+      });
+      return negatePromise(p, "Over-writing event by non-owner.");
   });
 });

@@ -25,7 +25,7 @@ export class Checkin {
   setCurrentUser(user: firebase.User | null) {
     this.user = user;
     if (user) {
-      console.log(user.uid, user.displayName, user.email, user.photoURL);
+
     }
   }
 
