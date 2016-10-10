@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { negatePromise } from './helpers';
+import { negatePromise, randomString } from './helpers';
 
 import * as firebase from 'firebase';
 import { Checkin } from '../checkin';
@@ -20,21 +20,16 @@ suite("Checkin not Signed In", () => {
   });
 
   test("Create Event", () => {
-    negatePromise(checkin.createEvent('test-event', "This is my test event"),
+    negatePromise(checkin.createEvent('test-event' + randomString(), "This is my test event"),
       "Should not be able to create events w/o sign in");
   });
 });
 
 suite("Checkin Signed In.", () => {
   let checkin: Checkin;
-  let user: firebase.User;
 
   setup(() => {
     checkin = new Checkin(app);
-    return app.auth().signInAnonymously()
-      .then((u) => {
-        user = u;
-      });
   });
 
   test("Constructor", () => {
@@ -42,23 +37,32 @@ suite("Checkin Signed In.", () => {
   });
 
   test("Create user", () => {
-    checkin.setCurrentUser(user);
+    return app.auth().signInAnonymously()
+      .then((user) => {
+        checkin.setCurrentUser(user);
+      });
   });
 
   test("Create Event", () => {
-    checkin.setCurrentUser(user);
-    return checkin.createEvent('test-event', "This is my test event");
+    return app.auth().signInAnonymously()
+      .then((user) => {
+        checkin.setCurrentUser(user);
+        return checkin.createEvent('test-event-' + randomString(), "This is my test event");
+      });
   });
 
   test("Over-write event by non-owner", () => {
-    checkin.setCurrentUser(user);
-    let p = checkin.createEvent('test-event', "This is my test event")
+    let id = 'test-event-' + randomString();
+    return app.auth().signInAnonymously()
+      .then((user) => {
+        checkin.setCurrentUser(user);
+        return checkin.createEvent(id, "This is my test event");
+      })
       .then(() => app.auth().signOut())
       .then(() => app.auth().signInAnonymously())
       .then((user) => {
-        checkin.setCurrentUser(user);
-        return checkin.createEvent('test-event', "Over-write event");
+        return negatePromise(checkin.createEvent(id, "Over-write event"),
+          "Over-writing event by non-owner.");
       });
-      return negatePromise(p, "Over-writing event by non-owner.");
   });
 });

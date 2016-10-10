@@ -24,9 +24,6 @@ export class Checkin {
 
   setCurrentUser(user: firebase.User | null) {
     this.user = user;
-    if (user) {
-
-    }
   }
 
   createEvent(id: string, title: string): Promise<void> {

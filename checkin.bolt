@@ -1,4 +1,15 @@
-path / {
-  read() { true }
-  write() { auth != null }
+type UserId extends String;
+
+type Event {
+  title: String;
+  owner: UserId;
 }
+
+path /events/{id} is Event {
+  read() { true }
+  create() { auth != null }
+  update() { isCurrentUser(this.owner) }
+  delete() { isCurrentUser(this.owner) }
+}
+
+isCurrentUser(id) { auth != null && auth.id == id }
