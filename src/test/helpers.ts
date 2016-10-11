@@ -12,3 +12,13 @@ export function randomString(n = 8) {
   }
   return result;
 }
+
+export function tracePromise(p: Promise<any>, message: string) {
+  p
+    .then((value) => {
+      console.log("Promise " + message + " resolves.");
+    })
+    .catch((error) => {
+      console.log("Promise " + message + " rejected (" + error + ")");
+    })
+}

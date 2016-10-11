@@ -23,3 +23,6 @@ for file in lib/test/*-test.js; do
   browserify --debug "$file" -o "$TARGET"
   ls -l $TARGET
 done
+
+echo -e "\nRebuilding and deploying rules ..."
+firebase deploy --only database

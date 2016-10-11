@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { negatePromise, randomString } from './helpers';
+import { negatePromise, randomString, tracePromise } from './helpers';
 
 import * as firebase from 'firebase';
 import { Checkin } from '../checkin';
@@ -7,6 +7,9 @@ import { Checkin } from '../checkin';
 let config = require('../config');
 
 let app = firebase.initializeApp(config);
+
+const TEST_USER_1 = 'testuser01@example.com';
+const TEST_USER_2 = 'testuser02@example.com';
 
 suite("Checkin not Signed In", () => {
   let checkin: Checkin;
@@ -37,14 +40,14 @@ suite("Checkin Signed In.", () => {
   });
 
   test("Create user", () => {
-    return app.auth().signInAnonymously()
+    return app.auth().signInWithEmailAndPassword(TEST_USER_1, config.testAccountPassword)
       .then((user) => {
-        checkin.setCurrentUser(user);
+        tracePromise(checkin.setCurrentUser(user), "setCurrentUser");
       });
   });
 
   test("Create Event", () => {
-    return app.auth().signInAnonymously()
+    return app.auth().signInWithEmailAndPassword(TEST_USER_1, config.testAccountPassword)
       .then((user) => {
         checkin.setCurrentUser(user);
         return checkin.createEvent('test-event-' + randomString(), "This is my test event");
@@ -53,14 +56,15 @@ suite("Checkin Signed In.", () => {
 
   test("Over-write event by non-owner", () => {
     let id = 'test-event-' + randomString();
-    return app.auth().signInAnonymously()
+    return app.auth().signInWithEmailAndPassword(TEST_USER_1, config.testAccountPassword)
       .then((user) => {
         checkin.setCurrentUser(user);
         return checkin.createEvent(id, "This is my test event");
       })
       .then(() => app.auth().signOut())
-      .then(() => app.auth().signInAnonymously())
+      .then(() => app.auth().signInWithEmailAndPassword(TEST_USER_2, config.testAccountPassword))
       .then((user) => {
+        checkin.setCurrentUser(user);
         return negatePromise(checkin.createEvent(id, "Over-write event"),
           "Over-writing event by non-owner.");
       });

@@ -5,6 +5,31 @@ type Event {
   owner: UserId;
 }
 
+type User {
+  email: String;
+  displayName: String | Null;
+  photoURL: String | Null;
+}
+
+type Role extends String {
+  validate() { this == 'admin' }
+}
+
+path /users/{uid} is User {
+  // Allow new user to read that his user record has not yet
+  // been created (null).
+  read() { this == null || isAdmin() || isCurrentUser(uid) }
+
+  create() { isCurrentUser(uid) }
+  update() { isCurrentUser(uid) }
+  delete() { isAdmin() }
+}
+
+path /roles/{uid} is Role {
+  read() { isAdmin() }
+  write() { isAdmin() }
+}
+
 path /events/{id} is Event {
   read() { true }
   create() { auth != null }
@@ -13,3 +38,4 @@ path /events/{id} is Event {
 }
 
 isCurrentUser(id) { auth != null && auth.id == id }
+isAdmin() { auth != null && root.roles[auth.uid] == 'admin' } 
