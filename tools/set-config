@@ -4,10 +4,20 @@ set -e
 
 cd $PROJ_DIR
 
-if [[ "$1" == "" ]]; then
-  ENVIRONMENT="testing"
-else
+if [[ "$1" != "" ]]; then
   ENVIRONMENT="$1"
+  shift
+else
+  if [[ -f configs/current ]]; then
+    ENVIRONMENT="$(cat configs/current)"
+  else
+    ENVIRONMENT="testing"
+  fi
+
+  read -p "Environment (testing|staging|production - default $ENVIRONMENT): " NEW_ENV
+  if [[ "$NEW_ENV" != "" ]]; then
+    ENVIRONMENT="$NEW_ENV"
+  fi
 fi
 
 CONFIG_FILE="$PROJ_DIR/configs/${ENVIRONMENT}.ts"
@@ -19,6 +29,6 @@ fi
 
 echo "$ENVIRONMENT" > configs/current
 ln -sf "$CONFIG_FILE" src/config.ts
-echo "Current configuration:"
-ls -l src/config.ts
+
+echo "Current configuration: $ENVIRONMENT"
 cat src/config.ts
