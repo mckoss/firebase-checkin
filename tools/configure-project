@@ -25,4 +25,4 @@ if [ ! -f "$CONFIG_FILE" ]; then
   exit 0
 fi
 
-set-config testing
+set-config
