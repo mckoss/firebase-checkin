@@ -1,17 +1,16 @@
 #!/bin/bash
 # deploy-project --- Build and deploy project to hosting.
+set -e
 
-if [[ "$1" == "" ]]; then
-  ENVIRONMENT="testing"
-else
-  ENVIRONMENT="$1"
-fi
+cd $PROJ_DIR
+
+ENVIRONMENT="$(cat configs/current)"
 
 if ! yes-or-no "Deploy to the $ENVIRONMENT environment"; then
   echo "Aborting deployment..."
+  echo "Run set-config to change deployment environment."
   exit 1
 fi
 
-set-config "$ENVIRONMENT"
 build-project
 firebase deploy -P "$ENVIRONMENT"

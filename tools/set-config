@@ -17,6 +17,8 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
  extract-config "$CONFIG_FILE"
 fi
 
-cp "$CONFIG_FILE" src/config.ts
+echo "$ENVIRONMENT" > configs/current
+ln -sf "$CONFIG_FILE" src/config.ts
 echo "Current configuration:"
+ls -l src/config.ts
 cat src/config.ts
