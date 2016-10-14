@@ -30,9 +30,13 @@ suite("Checkin not Signed In", () => {
 
 suite("Checkin Signed In.", () => {
   let checkin: Checkin;
+  let signIn: firebase.Promise<any>;
 
   setup(() => {
     checkin = new Checkin(app);
+    signIn = app.auth()
+      .signInWithEmailAndPassword(TEST_USER_1, config.testAccountPassword);
+    return signIn;
   });
 
   test("Constructor", () => {
@@ -40,23 +44,25 @@ suite("Checkin Signed In.", () => {
   });
 
   test("Create user", () => {
-    return app.auth().signInWithEmailAndPassword(TEST_USER_1, config.testAccountPassword)
+    return signIn
       .then((user) => {
         tracePromise(checkin.setCurrentUser(user), "setCurrentUser");
       });
   });
 
   test("Create Event", () => {
-    return app.auth().signInWithEmailAndPassword(TEST_USER_1, config.testAccountPassword)
+    return signIn
       .then((user) => {
         checkin.setCurrentUser(user);
         return checkin.createEvent('test-event-' + randomString(), "This is my test event");
       });
   });
 
-  test("Over-write event by non-owner", () => {
+  test("Over-write event by non-owner", function () {
+    this.timeout(5000);
+
     let id = 'test-event-' + randomString();
-    return app.auth().signInWithEmailAndPassword(TEST_USER_1, config.testAccountPassword)
+    return signIn
       .then((user) => {
         checkin.setCurrentUser(user);
         return checkin.createEvent(id, "This is my test event");
@@ -68,5 +74,8 @@ suite("Checkin Signed In.", () => {
         return negatePromise(checkin.createEvent(id, "Over-write event"),
           "Over-writing event by non-owner.");
       });
+  });
+
+  test("Join event", () => {
   });
 });
