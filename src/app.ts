@@ -32,6 +32,10 @@ export class CheckinUI {
       () => this.joinEvent());
     this.elements['new-event'].addEventListener('click',
       () => this.newEvent());
+    this.elements['plus-one'].addEventListener('click',
+      () => this.checkin.feedback(1));
+    this.elements['minus-one'].addEventListener('click',
+      () => this.checkin.feedback(-1));
 
     this.app.auth().onAuthStateChanged((user: firebase.User | null) => {
       this.checkin.setCurrentUser(user);
@@ -90,6 +94,14 @@ export class CheckinUI {
         let user = state.event.attendees[uid];
         let userDiv = document.createElement('div');
         userDiv.className = 'profile';
+        switch (user.feedback) {
+          case -1:
+            userDiv.classList.add('minus');
+            break;
+          case 1:
+            userDiv.classList.add('plus');
+            break;
+        }
         if (user.photoURL) {
           let pic = document.createElement('img');
           pic.src = user.photoURL;

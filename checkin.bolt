@@ -9,6 +9,7 @@ type User {
   email: String | Null;
   displayName: String | Null;
   photoURL: String | Null;
+  feedback: Number | Null;
 }
 
 type Role extends String {
