@@ -32,16 +32,19 @@ suite("Checkin Signed In.", () => {
   let checkin: Checkin;
   let signIn: firebase.Promise<any>;
   let eventId: string;
+  let user: firebase.User;
 
   setup(() => {
     checkin = new Checkin(app);
     signIn = app.auth()
-      .signInWithEmailAndPassword(TEST_USER_1, config.testAccountPassword);
+      .signInWithEmailAndPassword(TEST_USER_1, config.testAccountPassword)
+      .then((user) => this.user = user);
     return signIn;
   });
 
   function createEvent() {
     eventId = 'test-event-' + randomString();
+    console.log("eid", eventId);
     return signIn
       .then((user) => {
         checkin.setCurrentUser(user);
@@ -54,14 +57,24 @@ suite("Checkin Signed In.", () => {
   });
 
   test("Create user", () => {
-    return signIn
-      .then((user) => {
-        tracePromise(checkin.setCurrentUser(user), "setCurrentUser");
-      });
+    return signIn;
   });
 
   test("Create Event", () => {
-    return createEvent();
+    return createEvent()
+      .then((state) => {
+        assert.deepEqual(state, {
+          user: {
+            displayName: null,
+            email: TEST_USER_1,
+            photoURL: null
+          },
+          event: {
+            owner: this.user.uid,
+            title: "This is my test event"
+          }
+        });
+      })
   });
 
   test("Over-write event by non-owner", function () {
@@ -80,13 +93,18 @@ suite("Checkin Signed In.", () => {
   });
 
   test("Set event", () => {
+    let pState = new Promise((resolve, reject) => {
+      checkin.listen((state) => {
+        resolve(state);
+      });
+    });
+
     return createEvent()
       .then(() => app.auth()
             .signInWithEmailAndPassword(TEST_USER_2,
                                         config.testAccountPassword))
       .then((user) => checkin.setCurrentUser(user))
-      .then(() => {
-        return checkin.setEvent(eventId);
-      });
+      .then(() => checkin.setEvent(eventId))
+      .then(() => pState);
   });
 });

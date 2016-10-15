@@ -1,43 +1,64 @@
 import * as firebase from 'firebase';
 import { User, Event } from './data-model';
-import { project } from './util';
+import { project, deepCopy } from './util';
+
+export interface CheckinState {
+  user: User | null;
+  event: Event | null;
+}
+
+export type StateListener = (state: CheckinState) => void;
 
 export class Checkin {
-  app: firebase.app.App;
-  database: firebase.database.Database;
   events: firebase.database.Reference;
   users: firebase.database.Reference;
-  user: User | null = null;
   uid: string | null = null;
+  listeners: StateListener[] = [];
+
+  state: CheckinState = {
+    user: null,
+    event: null
+  };
 
   constructor(app: firebase.app.App) {
-    this.app = app;
-    this.database = app.database();
-    this.users = this.database.ref('/users');
-    this.events = this.database.ref('/events');
+    let database = app.database();
+    this.users = database.ref('/users');
+    this.events = database.ref('/events');
   }
 
-  setCurrentUser(user: firebase.User | null): Promise<void> {
+  listen(listener: StateListener) {
+    this.listeners.push(listener);
+    listener(deepCopy(this.state));
+  }
+
+  updateState(): Promise<CheckinState> {
+    return new Promise((resolve) => {
+      resolve(deepCopy(this.state));
+    });
+  }
+
+  setCurrentUser(user: firebase.User | null): Promise<CheckinState> {
     if (!user) {
-      this.user = null;
       this.uid = null;
-      return Promise.resolve(null);
+      this.state.user = null;
+      return this.updateState();
     }
 
-    this.user = project(user, ['email', 'displayName', 'photoURL']) as User;
+    this.state.user = project(user, ['email', 'displayName', 'photoURL']) as User;
     this.uid = user.uid;
 
-    let p = this.users.child(this.uid).once('value')
+    // Ensure user is registered.
+    this.users.child(this.uid).once('value')
       .then((snapshot) => {
         let data = snapshot.val();
         if (data === null) {
-          this.users.child(this.uid!).set(this.user!);
+          this.users.child(this.uid!).set(this.state.user);
         }
       });
-      return p as Promise<void>;
+    return this.updateState();
   }
 
-  createEvent(id: string, title: string): Promise<Event> {
+  createEvent(id: string, title: string): Promise<CheckinState> {
     if (this.uid === null) {
       return Promise.reject(new Error("You must be signed in to create an event."));
     }
@@ -45,18 +66,18 @@ export class Checkin {
       title: title,
       owner: this.uid
     };
-    return (this.events.child(id).set(event) as Promise<Event>)
+    return (this.events.child(id).set(event) as Promise<any>)
       .then(() => {
-        return event;
+        this.state.event = event;
+        return this.updateState();
       });
   }
 
-  setEvent(id: string): Promise<Event> {
-    return new Promise((resolve, reject) => {
-      return this.events.child(id).once('value')
-        .then((snapshot: firebase.database.DataSnapshot) => {
-          resolve(snapshot.val());
-        });
-    });
-  }
+  setEvent(id: string): Promise<CheckinState> {
+    return (this.events.child(id).once('value') as Promise<any>)
+      .then((snapshot) => {
+        this.state.event = snapshot.val() as Event;
+        return this.updateState();
+      });
+  };
 }
