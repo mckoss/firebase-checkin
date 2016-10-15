@@ -8,12 +8,23 @@
 
 <body>
   <h1>Firebase Checkin</h1>
+  <div id="error-message"></div>
   <input type="button" id="sign-in" value="Sign In" />
+  <input type="button" id="sign-out" value="Sign Out" />
+  <div>Current user: <span id="user-name"></span>
+    <br><img id="profile-pic" style="height: 50px">
+  </div>
+  <div>Current event: <span id="event-title"></span>
+    <div id="attendees"></div>
+  </div>
 
   <form>
-    <input type="text" id="event-id" />
-    <input type="text" id="event-title" />
-    <input type="button" id="create-event" value="Create Event" />
+    <label for="event-id">Event id:&nbsp;<input type="text" id="event-id" /></label>
+    <br><label for="event-title-input">Title:&nbsp;
+      <input type="text" id="event-title-input" /></label>
+    <br><input type="button" id="create-event" value="Create Event" />
+    <input type="button" id="set-event" value="Set Event" />
+    <input type="button" id="join-event" value="Join Event" />
   </form>
 </body>
 

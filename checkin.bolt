@@ -39,6 +39,7 @@ path /events/{id} is Event {
 
 path /events/{id}/attendees/{uid} is User {
   create() { isCurrentUser(uid) }
+  update() { isCurrentUser(uid) }
 }
 
 isCurrentUser(id) { auth != null && auth.uid == id }

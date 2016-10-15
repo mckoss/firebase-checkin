@@ -15,6 +15,7 @@ export class Checkin {
   users: firebase.database.Reference;
   uid: string | null = null;
   listeners: StateListener[] = [];
+  eventId: string | null = null;;
   eventFn: any;
 
   state: CheckinState = {
@@ -102,13 +103,33 @@ export class Checkin {
   }
 
   setEvent(id: string) {
+    if (id === this.eventId) {
+      return;
+    }
     if (this.eventFn) {
       this.events.child(id).off('value', this.eventFn);
       this.state.event = null;
+      this.eventId = null;
     }
     this.eventFn = this.events.child(id).on('value', (snapshot) => {
+      this.eventId = id;
       this.state.event = snapshot!.val() as Event;
       this.updateState();
     });
   };
+
+  joinEvent() {
+    if (this.uid === null) {
+      this.state.error = "You must be signed in to create an event.";
+      this.updateState();
+      return;
+    }
+    if (!this.eventId) {
+      this.state.error = "There is no current event to join.";
+      this.updateState();
+      return;
+    }
+    this.events.child(this.eventId).child('attendees').child(this.uid)
+      .set(this.state.user);
+  }
 }

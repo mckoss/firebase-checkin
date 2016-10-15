@@ -106,20 +106,24 @@ suite("Checkin Signed In.", () => {
       });
   });
 
-  test("Set event", () => {
-    return createEvent()
+  test("Set and join event", (done) => {
+    let count = 1;
+    createEvent()
       .then(() => app.auth()
             .signInWithEmailAndPassword(TEST_USER_2,
                                         config.testAccountPassword))
       .then((user) => checkin.setCurrentUser(user))
       .then(() => checkin.setEvent(eventId))
       .then(() => {
-        return new Promise((resolve, reject) => {
-          checkin.listen((state) => {
-            assert.equal(state.user!.email, TEST_USER_2);
-            assert.equal(Object.keys(state.event!.attendees).length, 1);
-            resolve(state);
-          });
+        checkin.listen((state) => {
+          assert.equal(state.user!.email, TEST_USER_2);
+          assert.equal(Object.keys(state.event!.attendees).length, count);
+          if (count === 1) {
+            count += 1;
+            checkin.joinEvent();
+          } else {
+            done();
+          }
         });
       });
   });
