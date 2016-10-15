@@ -6,7 +6,7 @@ type Event {
 }
 
 type User {
-  email: String;
+  email: String | Null;
   displayName: String | Null;
   photoURL: String | Null;
 }
@@ -37,5 +37,9 @@ path /events/{id} is Event {
   delete() { isCurrentUser(this.owner) }
 }
 
+path /events/{id}/attendees/{uid} is User {
+  create() { isCurrentUser(uid) }
+}
+
 isCurrentUser(id) { auth != null && auth.id == id }
-isAdmin() { auth != null && root.roles[auth.uid] == 'admin' } 
+isAdmin() { auth != null && root.roles[auth.uid] == 'admin' }

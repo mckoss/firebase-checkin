@@ -38,13 +38,12 @@ suite("Checkin Signed In.", () => {
     checkin = new Checkin(app);
     signIn = app.auth()
       .signInWithEmailAndPassword(TEST_USER_1, config.testAccountPassword)
-      .then((user) => this.user = user);
+      .then((newUser) => user = newUser);
     return signIn;
   });
 
   function createEvent() {
     eventId = 'test-event-' + randomString();
-    console.log("eid", eventId);
     return signIn
       .then((user) => {
         checkin.setCurrentUser(user);
@@ -65,13 +64,19 @@ suite("Checkin Signed In.", () => {
       .then((state) => {
         assert.deepEqual(state, {
           user: {
-            displayName: null,
+            displayName: "testuser01",
             email: TEST_USER_1,
             photoURL: null
           },
           event: {
-            owner: this.user.uid,
-            title: "This is my test event"
+            owner: user.uid,
+            title: "This is my test event",
+            attendees: {
+              [user.uid]: {
+                displayName: "testuser01 (Organizer)",
+                photoURL: null
+              }
+            }
           }
         });
       })

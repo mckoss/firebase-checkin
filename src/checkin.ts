@@ -14,6 +14,7 @@ export class Checkin {
   users: firebase.database.Reference;
   uid: string | null = null;
   listeners: StateListener[] = [];
+  eventFn: any;
 
   state: CheckinState = {
     user: null,
@@ -44,8 +45,17 @@ export class Checkin {
       return this.updateState();
     }
 
-    this.state.user = project(user, ['email', 'displayName', 'photoURL']) as User;
+    let currentUser = project(user,
+                              ['email', 'displayName', 'photoURL']) as User;
+    if (!currentUser.displayName) {
+      if (user.email) {
+        currentUser.displayName = user.email.slice(0, user.email.indexOf('@'));
+      } else {
+        currentUser.displayName = "A User"
+      }
+    }
     this.uid = user.uid;
+    this.state.user = currentUser;
 
     // Ensure user is registered.
     this.users.child(this.uid).once('value')
@@ -64,7 +74,13 @@ export class Checkin {
     }
     let event = {
       title: title,
-      owner: this.uid
+      owner: this.uid,
+      attendees: {
+        [this.uid]: {
+          displayName: this.state.user!.displayName + " (Organizer)",
+          photoURL: this.state.user!.photoURL
+        }
+      }
     };
     return (this.events.child(id).set(event) as Promise<any>)
       .then(() => {
@@ -73,11 +89,14 @@ export class Checkin {
       });
   }
 
-  setEvent(id: string): Promise<CheckinState> {
-    return (this.events.child(id).once('value') as Promise<any>)
-      .then((snapshot) => {
-        this.state.event = snapshot.val() as Event;
-        return this.updateState();
-      });
+  setEvent(id: string) {
+    if (this.eventFn) {
+      this.events.child(id).off('value', this.eventFn);
+      this.state.event = null;
+    }
+    this.eventFn = this.events.child(id).on('value', function(snapshot) {
+      this.state.event = snapshot!.val() as Event;
+      this.updateState();
+    });
   };
 }

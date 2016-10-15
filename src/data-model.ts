@@ -3,10 +3,11 @@
 export interface Event {
   title: string;
   owner: string;
+  attendees: {[uid: string]: User}
 }
 
 export interface User {
-  email: string;
+  email?: string;
   displayName: string;
-  photoURL: string;
+  photoURL?: string;
 }
