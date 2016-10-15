@@ -30,6 +30,10 @@ body:not(.can-join) .can-join-only {
   display: none;
 }
 
+body::not(.is-joined) .is-joined-only {
+  display: none;
+}
+
 div.profile {
   display: inline-block;
   text-align: center;

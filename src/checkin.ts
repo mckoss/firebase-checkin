@@ -99,6 +99,7 @@ export class Checkin {
       })
       .catch((error) => {
         this.state.error = "Could not create event: " + error;
+        this.updateState();
       });
   }
 
@@ -141,6 +142,13 @@ export class Checkin {
     let result = this.uid !== null &&
       this.state.event !== null &&
       this.state.event.attendees[this.uid] === undefined;
+    return result;
+  }
+
+  isJoined(): boolean {
+    let result = this.uid !== null &&
+      this.state.event !== null &&
+      this.state.event.attendees[this.uid] !== undefined;
     return result;
   }
 }

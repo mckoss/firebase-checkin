@@ -20,18 +20,18 @@ export class CheckinUI {
   ) {
     this.bindElements();
 
-    this.elements['sign-in-google'].addEventListener(
-      'click', this.signInGoogle.bind(this));
-    this.elements['sign-in-facebook'].addEventListener(
-      'click', this.signInFacebook.bind(this));
-    this.elements['sign-out'].addEventListener(
-      'click', this.signOut.bind(this));
-    this.elements['create-event'].addEventListener(
-      'click', this.createEvent.bind(this));
-    this.elements['join-event'].addEventListener(
-      'click', this.joinEvent.bind(this));
-    this.elements['new-event'].addEventListener(
-      'click', this.newEvent.bind(this));
+    this.elements['sign-in-google'].addEventListener('click',
+      () => this.signInGoogle());
+    this.elements['sign-in-facebook'].addEventListener('click',
+      () => this.signInFacebook());
+    this.elements['sign-out'].addEventListener('click',
+      () => this.signOut());
+    this.elements['create-event'].addEventListener('click',
+      () => this.createEvent());
+    this.elements['join-event'].addEventListener('click',
+      () => this.joinEvent());
+    this.elements['new-event'].addEventListener('click',
+      () => this.newEvent());
 
     this.app.auth().onAuthStateChanged((user: firebase.User | null) => {
       this.checkin.setCurrentUser(user);
@@ -71,6 +71,7 @@ export class CheckinUI {
     this.setBodyState('signed-in', state.user !== null);
     this.setBodyState('event', state.event !== null);
     this.setBodyState('can-join', this.checkin.canJoin());
+    this.setBodyState('is-joined', this.checkin.isJoined());
 
     if (state.user) {
       this.elements['user-name'].textContent = state.user.displayName;
