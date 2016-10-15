@@ -70,7 +70,7 @@ export class CheckinUI {
 
     this.setBodyState('signed-in', state.user !== null);
     this.setBodyState('event', state.event !== null);
-    this.setBodyState('joined', !this.checkin.canJoin());
+    this.setBodyState('can-join', this.checkin.canJoin());
 
     if (state.user) {
       this.elements['user-name'].textContent = state.user.displayName;

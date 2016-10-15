@@ -26,7 +26,7 @@ body:not(.event) .event-only {
   display: none
 }
 
-body.joined .not-joined-only {
+body:not(.can-join) .can-join-only {
   display: none;
 }
 
