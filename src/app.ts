@@ -20,8 +20,10 @@ export class CheckinUI {
   ) {
     this.bindElements();
 
-    this.elements['sign-in'].addEventListener(
-      'click', this.signIn.bind(this));
+    this.elements['sign-in-google'].addEventListener(
+      'click', this.signInGoogle.bind(this));
+    this.elements['sign-in-facebook'].addEventListener(
+      'click', this.signInFacebook.bind(this));
     this.elements['sign-out'].addEventListener(
       'click', this.signOut.bind(this));
     this.elements['create-event'].addEventListener(
@@ -41,9 +43,15 @@ export class CheckinUI {
     this.checkin.listen(this.listener.bind(this));
   }
 
-  signIn() {
+  signInGoogle() {
     let provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/plus.login');
+    // signInWithPopup does not work on mobile devices
+    this.app.auth().signInWithRedirect(provider);
+  }
+
+  signInFacebook() {
+    var provider = new firebase.auth.FacebookAuthProvider();
     // signInWithPopup does not work on mobile devices
     this.app.auth().signInWithRedirect(provider);
   }
