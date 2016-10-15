@@ -20,6 +20,14 @@ by:
 
 # Building this Repo
 
+Create a new firebase project at firebase.google.com (you'll be asked for it's name
+in the set-config script).
+
+You need to setup two testing accounts in the firebase console (Auth tab).  You also need
+to enable Authenticating with Google and Email (and optionally with Facebook).
+
+E.g. https://firebase.corp.google.com/project/_/authentication/providers
+
 ```
 $ source tools/use
 $ configure-project
@@ -27,6 +35,20 @@ $ set-config
 $ build-project
 $ run-tests
 ```
+
+
+```
+testuser01@example.com
+testuser02@example.com
+```
+
+Make up a (the same) password for these - put in the configs/staging.ts file
+like so:
+
+```
+  "testAccountPassword": "foobar"
+```
+
 
 # Resources
 
