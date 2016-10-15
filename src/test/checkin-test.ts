@@ -79,7 +79,7 @@ suite("Checkin Signed In.", () => {
           owner: user.uid,
           attendees: {
             [user.uid]: {
-              displayName: "testuser01 (Organizer)",
+              displayName: "testuser01",
               photoURL: null
             }
           }
