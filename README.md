@@ -27,3 +27,13 @@ $ set-config
 $ build-project
 $ run-tests
 ```
+
+# Resources
+
+```
+Demo:
+https://checkin-staging.firebaseapp.com/#event=gdg
+
+Code Lab Hints:
+https://github.com/mckoss/firebase-checkin/pull/1/files
+```
