@@ -44,7 +44,8 @@ export class CheckinUI {
   signIn() {
     let provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/plus.login');
-    this.app.auth().signInWithPopup(provider);
+    // signInWithPopup does not work on mobile devices
+    this.app.auth().signInWithRedirect(provider);
   }
 
   signOut() {
