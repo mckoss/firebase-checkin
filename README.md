@@ -34,6 +34,7 @@ $ configure-project
 $ set-config
 $ build-project
 $ run-tests
+$ run-browser-test
 ```
 
 
