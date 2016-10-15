@@ -31,12 +31,13 @@
 		<input type="button" id="join-event" value="Join Event" />
 	</div>
 
-	<form class="no-event-only">
-		<label for="event-id">Event id:&nbsp;<input type="text" id="event-id" /></label>
-		<br><label for="event-title-input">Title:&nbsp;
-      <input type="text" id="event-title-input" /></label>
-		<br><input type="button" id="create-event" value="Create Event" />
+  <input type="button" id="new-event" class="event-only" value="New Event">
 
+	<form class="no-event-only signed-in-only">
+		<label for="event-id">Event id:&nbsp;<input type="text" id="event-id"></label>
+		<br><label for="event-title-input">Title:&nbsp;
+      <input type="text" id="event-title-input"></label>
+		<br><input type="button" id="create-event" value="Create Event">
 	</form>
 </body>
 

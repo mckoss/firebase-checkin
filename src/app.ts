@@ -30,6 +30,8 @@ export class CheckinUI {
       'click', this.createEvent.bind(this));
     this.elements['join-event'].addEventListener(
       'click', this.joinEvent.bind(this));
+    this.elements['new-event'].addEventListener(
+      'click', this.newEvent.bind(this));
 
     this.app.auth().onAuthStateChanged((user: firebase.User | null) => {
       this.checkin.setCurrentUser(user);
@@ -110,6 +112,11 @@ export class CheckinUI {
 
   joinEvent() {
     this.checkin.joinEvent();
+  }
+
+  newEvent() {
+    window.location.hash = '';
+    this.checkin.setEvent('');
   }
 
   checkAnchor() {

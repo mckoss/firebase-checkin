@@ -106,10 +106,14 @@ export class Checkin {
     if (id === this.eventId) {
       return;
     }
-    if (this.eventFn) {
-      this.events.child(id).off('value', this.eventFn);
+    if (this.eventId) {
+      this.events.child(this.eventId).off('value', this.eventFn);
       this.state.event = null;
       this.eventId = null;
+    }
+    if (id == '') {
+      this.updateState();
+      return;
     }
     this.eventFn = this.events.child(id).on('value', (snapshot) => {
       this.eventId = id;
