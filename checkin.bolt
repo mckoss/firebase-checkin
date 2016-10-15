@@ -41,5 +41,5 @@ path /events/{id}/attendees/{uid} is User {
   create() { isCurrentUser(uid) }
 }
 
-isCurrentUser(id) { auth != null && auth.id == id }
+isCurrentUser(id) { auth != null && auth.uid == id }
 isAdmin() { auth != null && root.roles[auth.uid] == 'admin' }
