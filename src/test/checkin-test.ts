@@ -23,8 +23,10 @@ suite("Checkin not Signed In", () => {
   });
 
   test("Create Event", () => {
-    negatePromise(checkin.createEvent('test-event' + randomString(), "This is my test event"),
-      "Should not be able to create events w/o sign in");
+    checkin.createEvent('test-event' + randomString(), "This is my test event");
+    checkin.listen((state) => {
+      assert.equal(state.error, "You must be signed in to create an event.");
+    });
   });
 });
 
@@ -59,27 +61,32 @@ suite("Checkin Signed In.", () => {
     return signIn;
   });
 
-  test("Create Event", () => {
-    return createEvent()
-      .then((state) => {
-        assert.deepEqual(state, {
-          user: {
-            displayName: "testuser01",
-            email: TEST_USER_1,
-            photoURL: null
-          },
-          event: {
-            owner: user.uid,
-            title: "This is my test event",
-            attendees: {
-              [user.uid]: {
-                displayName: "testuser01 (Organizer)",
-                photoURL: null
-              }
+  test("Create Event", (done) => {
+    createEvent();
+    checkin.listen((state) => {
+      if (!state.event) {
+        return;
+      }
+      assert.deepEqual(state, {
+        error: null,
+        user: {
+          email: TEST_USER_1,
+          displayName: "testuser01",
+          photoURL: null
+        },
+        event: {
+          title: "This is my test event",
+          owner: user.uid,
+          attendees: {
+            [user.uid]: {
+              displayName: "testuser01 (Organizer)",
+              photoURL: null
             }
           }
-        });
-      })
+        }
+      });
+      done();
+    });
   });
 
   test("Over-write event by non-owner", function () {
@@ -92,8 +99,10 @@ suite("Checkin Signed In.", () => {
                                         config.testAccountPassword))
       .then((user) => {
         checkin.setCurrentUser(user);
-        return negatePromise(checkin.createEvent(eventId, "Over-write event"),
-          "Over-writing event by non-owner.");
+        checkin.createEvent(eventId, "Over-write event");
+        checkin.listen((state) => {
+          assert.equal(state.error, "Over-writing event by non-owner.");
+        });
       });
   });
 

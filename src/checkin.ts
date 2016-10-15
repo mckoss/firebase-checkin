@@ -5,6 +5,7 @@ import { project, deepCopy } from './util';
 export interface CheckinState {
   user: User | null;
   event: Event | null;
+  error: string | null;
 }
 
 export type StateListener = (state: CheckinState) => void;
@@ -18,7 +19,8 @@ export class Checkin {
 
   state: CheckinState = {
     user: null,
-    event: null
+    event: null,
+    error: null
   };
 
   constructor(app: firebase.app.App) {
@@ -29,24 +31,25 @@ export class Checkin {
 
   listen(listener: StateListener) {
     this.listeners.push(listener);
-    listener(deepCopy(this.state));
   }
 
-  updateState(): Promise<CheckinState> {
+  updateState() {
     let state = deepCopy(this.state);
+    if (this.state.error) {
+      this.state.error = null;
+    }
     for (let listener of this.listeners) {
       listener(state);
     }
-    return new Promise((resolve) => {
-      resolve(state);
-    });
   }
 
-  setCurrentUser(user: firebase.User | null): Promise<CheckinState> {
+  setCurrentUser(user: firebase.User | null) {
     if (!user) {
       this.uid = null;
       this.state.user = null;
-      return this.updateState();
+      this.updateState();
+      this.updateState();
+      return;
     }
 
     let currentUser = project(user,
@@ -69,12 +72,14 @@ export class Checkin {
           this.users.child(this.uid!).set(this.state.user);
         }
       });
-    return this.updateState();
+    this.updateState();
   }
 
-  createEvent(id: string, title: string): Promise<CheckinState> {
+  createEvent(id: string, title: string) {
     if (this.uid === null) {
-      return Promise.reject(new Error("You must be signed in to create an event."));
+      this.state.error = "You must be signed in to create an event.";
+      this.updateState();
+      return;
     }
     let event = {
       title: title,
@@ -86,10 +91,13 @@ export class Checkin {
         }
       }
     };
-    return (this.events.child(id).set(event) as Promise<any>)
+    this.events.child(id).set(event)
       .then(() => {
         this.state.event = event;
-        return this.updateState();
+        this.updateState();
+      })
+      .catch((error) => {
+        this.state.error = "Could not create event: " + error;
       });
   }
 

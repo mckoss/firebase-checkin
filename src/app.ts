@@ -1,7 +1,7 @@
 import * as firebase from 'firebase';
 let config = require('./config');
 
-import { Checkin } from './checkin';
+import { Checkin, CheckinState } from './checkin';
 
 type ElementMap = { [id: string]: HTMLInputElement | null };
 
@@ -18,6 +18,7 @@ export class CheckinUI {
     'event-id': null,
     'event-title': null,
   };
+
   constructor(
     private app: firebase.app.App,
     private checkin: Checkin
@@ -33,6 +34,8 @@ export class CheckinUI {
 
     // Monitor the address bar for changes.
     setInterval(this.checkAnchor.bind(this), 500);
+
+    this.checkin.listen(this.listener.bind(this));
   }
 
   signIn() {
@@ -41,16 +44,14 @@ export class CheckinUI {
     this.app.auth().signInWithPopup(provider);
   }
 
+  listener(state: CheckinState) {
+    console.log(state);
+  }
+
   createEvent() {
     this.checkin.createEvent(
       this.elements['event-id']!.value,
-      this.elements['event-title']!.value)
-      .then(() => {
-        console.log("Event created");
-      })
-      .catch((e) => {
-        console.error("Could not create event: ", e);
-      });
+      this.elements['event-title']!.value);
   }
 
   checkAnchor() {
