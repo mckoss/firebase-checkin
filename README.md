@@ -1,4 +1,4 @@
-# Firebase-Checkin - sample app for a meetup checking app.
+# Firebase-Checkin - sample app for meetup check-ins.
 
 This sample app will demonstrate how design a Firebase app
 by:
