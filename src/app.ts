@@ -28,8 +28,6 @@ export class CheckinUI {
       'click', this.signOut.bind(this));
     this.elements['create-event'].addEventListener(
       'click', this.createEvent.bind(this));
-    this.elements['set-event'].addEventListener(
-      'click', this.setEvent.bind(this));
     this.elements['join-event'].addEventListener(
       'click', this.joinEvent.bind(this));
 
@@ -68,12 +66,13 @@ export class CheckinUI {
       this.elements['error-message'].textContent = "";
     }
 
+    this.setBodyState('signed-in', state.user !== null);
+    this.setBodyState('event', state.event !== null);
+    this.setBodyState('joined', !this.checkin.canJoin());
+
     if (state.user) {
       this.elements['user-name'].textContent = state.user.displayName;
       this.elements['profile-pic'].src = state.user.photoURL!;
-    } else {
-      this.elements['user-name'].textContent = "Not signed in";
-      this.elements['profile-pic'].src = "";
     }
 
     let attendees = this.elements['attendees'];
@@ -83,13 +82,14 @@ export class CheckinUI {
 
     if (state.event) {
       this.elements['event-title'].textContent = state.event.title;
+      this.elements['event-url'].textContent = window.location.href;
       for (let uid in state.event.attendees) {
         let user = state.event.attendees[uid];
         let userDiv = document.createElement('div');
+        userDiv.className = 'profile';
         if (user.photoURL) {
           let pic = document.createElement('img');
           pic.src = user.photoURL;
-          pic.setAttribute('style', 'height: 50px');
           userDiv.appendChild(pic);
         }
         let userName = document.createElement('span');
@@ -97,23 +97,19 @@ export class CheckinUI {
         userDiv.appendChild(userName);
         this.elements['attendees'].appendChild(userDiv);
       }
-    } else {
-      this.elements['event-title'].textContent = "No Event";
     }
   }
 
   createEvent() {
+    let eventId = this.elements['event-id'].value;
     this.checkin.createEvent(
-      this.elements['event-id'].value,
+      eventId,
       this.elements['event-title-input'].value);
+    window.location.hash = '#event=' + eventId;
   }
 
   joinEvent() {
     this.checkin.joinEvent();
-  }
-
-  setEvent() {
-    this.checkin.setEvent(this.elements['event-id'].value);
   }
 
   checkAnchor() {
@@ -133,6 +129,14 @@ export class CheckinUI {
     for (let i = 0; i < elements.length; i++) {
       let elt = elements[i];
       this.elements[elt.id] = elt as HTMLInputElement;
+    }
+  }
+
+  private setBodyState(name: string, set = true) {
+    if (set) {
+      document.body.classList.add(name);
+    } else {
+      document.body.classList.remove(name);
     }
   }
 }

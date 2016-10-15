@@ -54,7 +54,7 @@ export class Checkin {
     }
 
     let currentUser = project(user,
-                              ['email', 'displayName', 'photoURL']) as User;
+      ['email', 'displayName', 'photoURL']) as User;
     if (!currentUser.displayName) {
       if (user.email) {
         currentUser.displayName = user.email.slice(0, user.email.indexOf('@'));
@@ -87,7 +87,7 @@ export class Checkin {
       owner: this.uid,
       attendees: {
         [this.uid]: {
-          displayName: this.state.user!.displayName + " (Organizer)",
+          displayName: this.state.user!.displayName,
           photoURL: this.state.user!.photoURL
         }
       }
@@ -131,5 +131,12 @@ export class Checkin {
     }
     this.events.child(this.eventId).child('attendees').child(this.uid)
       .set(this.state.user);
+  }
+
+  canJoin(): boolean {
+    let result = this.uid !== null &&
+      this.state.event !== null &&
+      this.state.event.attendees[this.uid] === undefined;
+    return result;
   }
 }

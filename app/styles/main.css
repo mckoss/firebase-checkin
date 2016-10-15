@@ -1,0 +1,77 @@
+body {
+  margin: 5px 10px;
+  padding: 0;
+  font-family: Helvetica, sans-serif;
+  font-size: 24px;
+  background: #ebebeb url("/images/gradient.jpg") repeat-x left top;
+}
+
+div.error {
+  color: red;
+}
+
+body:not(.signed-in) .signed-in-only {
+  display: none;
+}
+
+body.signed-in .signed-out-only {
+  display: none;
+}
+
+body.event .no-event-only {
+  display: none;
+}
+
+body:not(.event) .event-only {
+  display: none
+}
+
+body.joined .not-joined-only {
+  display: none;
+}
+
+div.profile {
+  width: 85px;
+  height: 110px;
+  display: inline-block;
+  text-align: center;
+}
+
+div.profile img {
+  margin: auto;
+  height: 75px;
+  border: 4px solid gray;
+  border-radius: 50%
+}
+
+div.profile.red img {
+  border-color: red
+}
+
+div.profile.green img {
+  border-color: green;
+}
+
+div.profile span {
+  font-size: 12px;
+}
+
+h1 { margin: 5px 0 0 0; }
+h2 { text-align:center; margin: 0 0 5px 0; }
+hr { border: 2px solid black; }
+img { }
+div { padding:0; margin:0; }
+p { margin: 0 0 5px 0; }
+
+ol li { font-size: 20px; margin-bottom: 8px; }
+
+label {
+  font-size: 24px;
+  font-weight: bold;
+  display: inline-block;
+  width: 100px;
+  vertical-align: top;
+}
+
+input[type="text"] { font-size: 24px; width: 300px; }
+input[type="button"] { font-size: 24px; margin: 5px; }

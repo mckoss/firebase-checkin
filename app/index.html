@@ -2,31 +2,42 @@
 <html>
 
 <head>
-  <title>Firebase-Checkin</title>
-  <script src="scripts/index.js"></script>
+	<title>Firebase-Checkin</title>
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="width=device-width">
+	<script src="/scripts/index.js"></script>
+	<link rel="stylesheet" href="/styles/main.css">
 </head>
 
 <body>
-  <h1>Firebase Checkin</h1>
-  <div id="error-message"></div>
-  <input type="button" id="sign-in-google" value="Google" />
-    <input type="button" id="sign-in-facebook" value="Facebook" />
-  <input type="button" id="sign-out" value="Sign Out" />
-  <div>Current user: <span id="user-name"></span>
-    <br><img id="profile-pic" style="height: 50px">
-  </div>
-  <div>Current event: <span id="event-title"></span>
-    <div id="attendees"></div>
-  </div>
+	<h1 id="event-title" class="event-only"></h1>
+	<div id="event-url" class="event-only"></div>
+	<div id="error-message" class="error"></div>
 
-  <form>
-    <label for="event-id">Event id:&nbsp;<input type="text" id="event-id" /></label>
-    <br><label for="event-title-input">Title:&nbsp;
+	<div class="signed-out-only">
+		Sign in:
+		<input type="button" id="sign-in-google" value="Google" />
+		<input type="button" id="sign-in-facebook" value="Facebook" />
+	</div>
+	<input type="button" class="signed-in-only" id="sign-out" value="Sign Out" />
+
+	<div id="attendees" class="event-only"></div>
+
+	<div class="not-joined-only">
+		<div class="profile">
+			<img id="profile-pic">
+			<span id="user-name"></span>
+		</div>
+		<input type="button" id="join-event" value="Join Event" />
+	</div>
+
+	<form class="no-event-only">
+		<label for="event-id">Event id:&nbsp;<input type="text" id="event-id" /></label>
+		<br><label for="event-title-input">Title:&nbsp;
       <input type="text" id="event-title-input" /></label>
-    <br><input type="button" id="create-event" value="Create Event" />
-    <input type="button" id="set-event" value="Set Event" />
-    <input type="button" id="join-event" value="Join Event" />
-  </form>
+		<br><input type="button" id="create-event" value="Create Event" />
+
+	</form>
 </body>
 
 </html>
