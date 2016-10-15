@@ -7,7 +7,7 @@ type Event {
 
 type User {
   email: String | Null;
-  displayName: String | Null;
+  displayName: String;
   photoURL: String | Null;
 }
 
