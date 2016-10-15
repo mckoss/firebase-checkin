@@ -1,26 +1,29 @@
-# Firebase-Checkin - sample app for a meetup checking app.
+# Firebase-Checkin - sample app for meetup check-ins.
 
-This sample app will demonstrate how to use Firebase to:
+This sample app will demonstrate how design a Firebase app
+by:
 
-- Build a cross-platform app that runs as:
-  - A (UI-less) behavioral test.
-  - A REPL (command-line) app.
-  - A progressive web app.
-  - An Android app.
-  - An iOS app.
-  - A desktop app.
-- Create an App through each major design and development stage:
-  - Data model.
-  - Security model.
-  - UI-less "business logic".
-  - Behavioral testing.
-  - Reactive UI.
+- Design the server-side data model.
+- Secure and validate the model with Rules.
+- The Typescript toolchain for node and browser:
+  - npm
+  - tsc
+  - browserify
+  - VSCode
+- Design the client app interface and local
+  application state.
+- Implement a UI-less (biz logic) application
+  with unit tests.
+- Create a simple web app that displays the
+  local app state and interacts with the user
+  to call UI-less app methods.
 
 # Building this Repo
 
 ```
 $ source tools/use
 $ configure-project
+$ set-config
 $ build-project
 $ run-tests
 ```

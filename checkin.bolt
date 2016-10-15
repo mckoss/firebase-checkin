@@ -33,9 +33,9 @@ path /roles/{uid} is Role {
 
 path /events/{id} is Event {
   read() { true }
-  create() { auth != null }
-  update() { isCurrentUser(this.owner) }
-  delete() { isCurrentUser(this.owner) }
+  create() { this == null || isCurrentUser(this.owner) }
+  update() { isCurrentUser(prior(this.owner)) }
+  delete() { isCurrentUser(prior(this.owner)) }
 }
 
 path /events/{id}/attendees/{uid} is User {
