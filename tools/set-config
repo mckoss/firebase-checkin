@@ -20,6 +20,7 @@ else
   fi
 fi
 
+mkdir -p "$PROJ_DIR/configs"
 CONFIG_FILE="$PROJ_DIR/configs/${ENVIRONMENT}.ts"
 
 if [[ ! -f "$CONFIG_FILE" ]]; then
