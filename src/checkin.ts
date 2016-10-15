@@ -33,8 +33,12 @@ export class Checkin {
   }
 
   updateState(): Promise<CheckinState> {
+    let state = deepCopy(this.state);
+    for (let listener of this.listeners) {
+      listener(state);
+    }
     return new Promise((resolve) => {
-      resolve(deepCopy(this.state));
+      resolve(state);
     });
   }
 
@@ -94,7 +98,7 @@ export class Checkin {
       this.events.child(id).off('value', this.eventFn);
       this.state.event = null;
     }
-    this.eventFn = this.events.child(id).on('value', function(snapshot) {
+    this.eventFn = this.events.child(id).on('value', (snapshot) => {
       this.state.event = snapshot!.val() as Event;
       this.updateState();
     });

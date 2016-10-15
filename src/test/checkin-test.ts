@@ -98,18 +98,20 @@ suite("Checkin Signed In.", () => {
   });
 
   test("Set event", () => {
-    let pState = new Promise((resolve, reject) => {
-      checkin.listen((state) => {
-        resolve(state);
-      });
-    });
-
     return createEvent()
       .then(() => app.auth()
             .signInWithEmailAndPassword(TEST_USER_2,
                                         config.testAccountPassword))
       .then((user) => checkin.setCurrentUser(user))
       .then(() => checkin.setEvent(eventId))
-      .then(() => pState);
+      .then(() => {
+        return new Promise((resolve, reject) => {
+          checkin.listen((state) => {
+            assert.equal(state.user!.email, TEST_USER_2);
+            assert.equal(Object.keys(state.event!.attendees).length, 1);
+            resolve(state);
+          });
+        });
+      });
   });
 });
