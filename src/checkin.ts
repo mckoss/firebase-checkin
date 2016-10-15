@@ -37,7 +37,7 @@ export class Checkin {
       return p as Promise<void>;
   }
 
-  createEvent(id: string, title: string): Promise<void> {
+  createEvent(id: string, title: string): Promise<Event> {
     if (this.uid === null) {
       return Promise.reject(new Error("You must be signed in to create an event."));
     }
@@ -45,6 +45,18 @@ export class Checkin {
       title: title,
       owner: this.uid
     };
-    return this.events.child(id).set(event) as Promise<void>;
+    return (this.events.child(id).set(event) as Promise<Event>)
+      .then(() => {
+        return event;
+      });
+  }
+
+  setEvent(id: string): Promise<Event> {
+    return new Promise((resolve, reject) => {
+      return this.events.child(id).once('value')
+        .then((snapshot: firebase.database.DataSnapshot) => {
+          resolve(snapshot.val());
+        });
+    });
   }
 }

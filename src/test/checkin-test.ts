@@ -31,6 +31,7 @@ suite("Checkin not Signed In", () => {
 suite("Checkin Signed In.", () => {
   let checkin: Checkin;
   let signIn: firebase.Promise<any>;
+  let eventId: string;
 
   setup(() => {
     checkin = new Checkin(app);
@@ -38,6 +39,15 @@ suite("Checkin Signed In.", () => {
       .signInWithEmailAndPassword(TEST_USER_1, config.testAccountPassword);
     return signIn;
   });
+
+  function createEvent() {
+    eventId = 'test-event-' + randomString();
+    return signIn
+      .then((user) => {
+        checkin.setCurrentUser(user);
+        return checkin.createEvent(eventId, "This is my test event");
+      });
+  }
 
   test("Constructor", () => {
     assert.isNotNull(checkin);
@@ -51,31 +61,32 @@ suite("Checkin Signed In.", () => {
   });
 
   test("Create Event", () => {
-    return signIn
-      .then((user) => {
-        checkin.setCurrentUser(user);
-        return checkin.createEvent('test-event-' + randomString(), "This is my test event");
-      });
+    return createEvent();
   });
 
   test("Over-write event by non-owner", function () {
     this.timeout(5000);
 
-    let id = 'test-event-' + randomString();
-    return signIn
-      .then((user) => {
-        checkin.setCurrentUser(user);
-        return checkin.createEvent(id, "This is my test event");
-      })
+    return createEvent()
       .then(() => app.auth().signOut())
-      .then(() => app.auth().signInWithEmailAndPassword(TEST_USER_2, config.testAccountPassword))
+      .then(() => app.auth()
+            .signInWithEmailAndPassword(TEST_USER_2,
+                                        config.testAccountPassword))
       .then((user) => {
         checkin.setCurrentUser(user);
-        return negatePromise(checkin.createEvent(id, "Over-write event"),
+        return negatePromise(checkin.createEvent(eventId, "Over-write event"),
           "Over-writing event by non-owner.");
       });
   });
 
-  test("Join event", () => {
+  test("Set event", () => {
+    return createEvent()
+      .then(() => app.auth()
+            .signInWithEmailAndPassword(TEST_USER_2,
+                                        config.testAccountPassword))
+      .then((user) => checkin.setCurrentUser(user))
+      .then(() => {
+        return checkin.setEvent(eventId);
+      });
   });
 });
