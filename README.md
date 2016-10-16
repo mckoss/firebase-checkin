@@ -43,8 +43,8 @@ $ source tools/use
 ```
 
 The following commands will configure this repository to use the firebase project
-you setup above as well as copy the intialization keys that the firebase SDK needs
-to association your application with your project:
+you setup above as well as copy the intialization keys that the Firebase SDK needs
+to associate your application with your project:
 
 ```
 $ configure-project        # Install npm dependencies and firebase configs
@@ -54,19 +54,60 @@ You'll be asked to copy and paste a code snippet - you can find it by clicking
 the "Add Firebase to your web app" button on the
 [project overview](https://console.firebase.google.com/project/_/overview) page.
 
-```
-$ build-project
-$ run-tests
-$ run-browser-test
-```
-
-Make up a (the same) password for these - put in the `configs/testing.ts` file
-like so:
+You should now be ready to build the project (using the TypeScript compiler),
+and run the unit tests.
 
 ```
-  "testAccountPassword": "foobar"
+$ build-project       # Runs TypeScript, Browserify, and updates Security Rules
+$ run-tests           # Runs all Unittests locally (using node.js)
+$ run-browser-test    # Starts a web server - and opens the browser-test.
 ```
 
+If you just want to run the web application:
+
+```
+$ firebase serve
+```
+
+# Server Configurations
+
+By default, this repo is setup to deploy to the `testing` configuration.  But
+it is typical to have separate `staging` and `production` projects (which their
+own databases and user accounts).
+
+There are two places that have configuration information.
+
+```
+.firebaserc - Alias names for the different projects like this:
+{
+  "projects": {
+    "staging": "checkin-staging",
+    "production": "checkin-b58f3",
+    "testing": "checkin-staging"
+}}
+```
+
+Each of these aliases also has Firebase SDK configuration information in `configs`
+directory:
+
+```
+configs
+├── current
+├── production.ts
+├── staging.ts
+└── testing.ts
+```
+
+These SDK configuration files are selected by using the `set-config` script.  It
+will also prompt you to copy and past the SDK code snippet to intialize a config
+file when it is first created.
+
+To deploy to the _current_ configuration (copies all files to the hosting
+site, and updates the Security Rules):
+
+```
+$ deploy-project
+```
 
 # Resources
 
