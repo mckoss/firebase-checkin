@@ -15,6 +15,8 @@ by:
 - Create a simple web app that displays the local app state and interacts with
   the user to call UI-less app methods.
 
+See also this [Code Walkthrough](docs/walkthrough.md).
+
 
 ## Building this Repo
 
