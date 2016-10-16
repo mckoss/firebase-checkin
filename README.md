@@ -15,7 +15,8 @@ by:
 - Create a simple web app that displays the local app state and interacts with
   the user to call UI-less app methods.
 
-# Building this Repo
+
+## Building this Repo
 
 - Dependencies: This repo is tested to work on Linux and Mac. You need to
   install [node.js](https://nodejs.org/en/download/) version 4 or later (run
@@ -69,7 +70,98 @@ If you just want to run the web application from localhost:
 $ firebase serve
 ```
 
-# Server Configurations
+
+## How Builds work
+
+The code in this project is written in Typescript.  The source files are
+in the `src` directory like this:
+
+```
+src
+├── app.ts
+├── checkin.ts
+├── config.ts -> ../configs/testing.ts
+├── data-model.ts
+├── deep-copy.ts
+├── test
+│   ├── checkin-test.ts
+│   └── helpers.ts
+└── util.ts
+```
+
+Note that unittest files are in the `src/test` subdirectory.
+
+### Typescript Compilation
+
+When you run `build-project` the `tsc` (Typescript compiler) is run.  It
+using the information in `tsconfig.json` to determine where the source files are
+and to place the compiled JavaScript files in the `lib` directory:
+
+```
+lib
+├── app.js
+├── app.js.map
+├── checkin.js
+├── checkin.js.map
+├── config.js
+├── config.js.map
+├── data-model.js
+├── data-model.js.map
+├── deep-copy.js
+├── deep-copy.js.map
+├── test
+│   ├── checkin-test.js
+│   ├── checkin-test.js.map
+│   ├── helpers.js
+│   └── helpers.js.map
+├── util.js
+└── util.js.map
+```
+
+The map files are sourcemaps that allow debuggers to display the original typescript
+code and set breakpoint even when debugging the generated JavaScript code.
+
+The node tests use the [mocha](https://mochajs.org/) test-runner and the
+[chai](http://chaijs.com/) assertion library. Note that tests are organized
+using the `TDD` interface conventions (suite(), test(), setup(), and
+teardown()) - which are aliases for the default `BDD` conventions(describe(),
+it(), beforeEach(), and afterEach()).
+
+### Bundling
+
+Since the compiled JavaScript files are in
+[commonjs modules](http://know.cujojs.com/tutorials/modules/authoring-cjs-modules)
+common to node.js - these files have to be _bundled_ in order to be loaded as
+a `script` in a web browser.
+
+Browserify concatenates all the JavaScript files in the right order, with a
+small wrapper to simulate the `modules`, `exports` and `require` symbols from
+the commonjs modules specification.
+
+The resulting single script file is copied to `index.js` and placed in the application
+`scripts` directory:
+
+```
+app
+├── images
+│   └── gradient.jpg
+├── index.html
+├── loader.html
+├── scripts
+│   ├── chai.js -> ../../node_modules/chai/chai.js
+│   ├── checkin-test.js
+│   ├── index.js
+│   └── mocha.js -> ../../node_modules/mocha/mocha.js
+├── styles
+│   ├── main.css
+│   └── mocha.css -> ../../node_modules/mocha/mocha.css
+└── test.html
+```
+
+Note that we symbolically link mocha and chai libraries into the web-served scripts
+directory for use by the browser-based unittests: `test.hml`.
+
+## Server Configurations
 
 By default, this repo is setup to deploy to the `testing` configuration.  But
 it is typical to have separate `staging` and `production` projects (with their
@@ -109,7 +201,8 @@ site, and updates the Security Rules):
 $ deploy-project
 ```
 
-# Resources
+
+## Resources
 
 ```
 Demo:
