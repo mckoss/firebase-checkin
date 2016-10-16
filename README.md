@@ -82,7 +82,6 @@ src
 ├── checkin.ts
 ├── config.ts -> ../configs/testing.ts
 ├── data-model.ts
-├── deep-copy.ts
 ├── test
 │   ├── checkin-test.ts
 │   └── helpers.ts
@@ -107,8 +106,6 @@ lib
 ├── config.js.map
 ├── data-model.js
 ├── data-model.js.map
-├── deep-copy.js
-├── deep-copy.js.map
 ├── test
 │   ├── checkin-test.js
 │   ├── checkin-test.js.map
