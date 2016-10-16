@@ -72,10 +72,10 @@ $ firebase serve
 # Server Configurations
 
 By default, this repo is setup to deploy to the `testing` configuration.  But
-it is typical to have separate `staging` and `production` projects (which their
+it is typical to have separate `staging` and `production` projects (with their
 own databases and user accounts).
 
-There are two places that have configuration information.
+There are two places in this repo that store configuration information.
 
 ```
 .firebaserc - Alias names for the different projects like this:
@@ -87,8 +87,8 @@ There are two places that have configuration information.
 }}
 ```
 
-Each of these aliases also has Firebase SDK configuration information in `configs`
-directory:
+Each of these aliases also has Firebase SDK configuration information in the
+`configs` directory:
 
 ```
 configs
@@ -99,10 +99,10 @@ configs
 ```
 
 These SDK configuration files are selected by using the `set-config` script.  It
-will also prompt you to copy and past the SDK code snippet to intialize a config
+will also prompt you to copy and paste the SDK code snippet to intialize a config
 file when it is first created.
 
-To deploy to the _current_ configuration (copies all files to the hosting
+To deploy to the _current_ configuration (copies all files to the project hosting
 site, and updates the Security Rules):
 
 ```
