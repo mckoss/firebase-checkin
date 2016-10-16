@@ -20,16 +20,16 @@ by:
 - Dependencies: This repo is tested to work on Linux and Mac. You need to
   install [node.js](https://nodejs.org/en/download/) version 4 or later (run
   `node --version` to see what is already installed).
-- Visit [firebase.google.com](https://firebase.google.com/console)
+- Visit [console.firebase.google.com](https://console.firebase.google.com)
 - Create a new project - you'll be asked for the
-  [project id](https://firebase.google.com/project/_/settings/general/) when
+  [project id](https://console.firebase.google.com/project/_/settings/general/) when
   you run the the `set-config` script.
 - Enable
-  [Authentication](https://firebase.google.com/project/_/authentication/providers)
+  [Authentication](https://console.firebase.google.com/project/_/authentication/providers)
   using Google and Email providers (and optionally Facebook - which will require
   you setting up a Facebook application).
 - Add two
-  [email accounts](https://firebase.google.com/project/_/authentication/users)
+  [email accounts](https://console.firebase.google.com/project/_/authentication/users)
   for use by the unittests (give them the same password you make up):
     - testuser01@example.com
     - testuser02@example.com
@@ -52,7 +52,7 @@ $ configure-project        # Install npm dependencies and firebase configs
 
 You'll be asked to copy and paste a code snippet - you can find it by clicking
 the "Add Firebase to your web app" button on the
-[project overview](https://firebase.google.com/project/_/overview) page.
+[project overview](https://console.firebase.google.com/project/_/overview) page.
 
 ```
 $ build-project
