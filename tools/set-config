@@ -1,8 +1,9 @@
 #!/bin/bash
-# set-config --- Set configuration of site (testing, staging, or production).
+# set-config --- Set current configuration of site (testing, staging, or production).
 set -e
 
-cd $PROJ_DIR
+cd "$PROJ_DIR"
+mkdir -p "configs"
 
 if [[ "$1" != "" ]]; then
   ENVIRONMENT="$1"
@@ -20,12 +21,26 @@ else
   fi
 fi
 
-mkdir -p "$PROJ_DIR/configs"
 CONFIG_FILE="$PROJ_DIR/configs/${ENVIRONMENT}.ts"
 
 if [[ ! -f "$CONFIG_FILE" ]]; then
  echo "Missing configuration file $CONFIG_FILE"
  extract-config "$CONFIG_FILE"
+
+ read -p "Unittest email account password if desired: " PASSWORD
+ if [[ "$PASSWORD" != "" ]]; then
+     CONTENT=""
+     SEP=""
+     ADD_LINE=",\n  \"testAccountPassword\": \"$PASSWORD\""
+     while IFS= read -r LINE; do
+       if [[ "$LINE" == "};" ]]; then
+           CONTENT="${CONTENT}${ADD_LINE}"
+       fi
+       CONTENT="${CONTENT}${SEP}${LINE}"
+       SEP="\n"
+     done < $CONFIG_FILE
+     echo -e "$CONTENT" > "$CONFIG_FILE"
+ fi
 fi
 
 echo "$ENVIRONMENT" > configs/current
