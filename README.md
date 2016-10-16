@@ -63,7 +63,7 @@ $ run-tests           # Runs all Unittests locally (using node.js)
 $ run-browser-test    # Starts a web server - and opens the browser-test.
 ```
 
-If you just want to run the web application:
+If you just want to run the web application from localhost:
 
 ```
 $ firebase serve
