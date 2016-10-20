@@ -46,12 +46,12 @@ div.profile img {
   border-radius: 50%
 }
 
-div.profile.red img {
+div.profile.minus img {
   border-color: red
 }
 
-div.profile.green img {
-  border-color: green;
+div.profile.plus img {
+  border-color: lawngreen;
 }
 
 div.profile span {

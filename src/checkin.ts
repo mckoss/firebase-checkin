@@ -151,4 +151,14 @@ export class Checkin {
       this.state.event.attendees[this.uid] !== undefined;
     return result;
   }
+
+  feedback(score: number) {
+    if (this.uid === null || this.eventId === null) {
+      this.state.error = "Must be signed into an event to score it.";
+      this.updateState();
+      return;
+    }
+    this.events.child(this.eventId).child('attendees').child(this.uid)
+      .child('feedback').set(score);
+  }
 }
